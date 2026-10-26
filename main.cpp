@@ -15,20 +15,22 @@ const string RESET = "\033[0m";
 const int R=6 , C=7;
 const char EMPTY= '.' , P1 = 'X', P2 = 'O';
 char board[R][C];
+bool endgame = true;
 
 //functions
 void renderBoard();
 int menu();
 void start();
-
-int main(){
+while(1){
+int main(endgame){
     renderBoard();
     cout << "\n\n";
     cout << BLUE << "CONNECT "<< RESET<< RED<< "4"<< RESET << " by Jayan \nversion 1"<< "\n\n";
     int mode = menu();
-    if (mode == 1) cout << "\n";start();
-        
-}
+    if (mode == 1) {cout << "\n";start();}
+    if (mode == 2 || mode == 3) {cout << RED << "mode is on update! , choose a different mode. \n" << RESET ; menu();}
+    if (mode == 0) endgame = false;
+}}
 
 void renderBoard(){
     for (auto &x : board){
