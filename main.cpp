@@ -14,10 +14,12 @@ constexpr string GREEN = "\033[1;32m";
 
 //main elements
 const int R=6 , C=7;
-const char EMPTY= '.' , P1 = 'X', P2 = 'O';
+
 char board[R][C];
 bool endgame = false;
 
+//GUI 
+const char EMPTY_GUI= '.' , P1_GUI = 'X', P2_GUI = 'O';
 //functions
 void renderBoard();
 string menu();
@@ -61,7 +63,7 @@ string menu(){
 void iniboard(){
     for (auto &x : board){
        for (auto &y :x){
-        y = EMPTY;}
+        y = EMPTY_GUI;}
     }
     
 }
