@@ -1,1 +1,2 @@
-# connect 4 Project
+# Connect 4 Project
+I am working on a private project to learn C++ beyond basic applications. My goal is to gain a deeper understanding of how to implement modern C++ practices and achieve optimal time complexity in real-world projects, moving beyond competitive programming.
