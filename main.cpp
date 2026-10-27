@@ -7,25 +7,24 @@
 using namespace std;
 
 //colors
-constexpr string RED = "\033[1;31m";
-constexpr string YELLOW = "\033[1;33m";
-constexpr string BLUE = "\033[1;34m";
-constexpr string RESET = "\033[0m";
-constexpr string GREEN = "\033[1;32m";
-constexpr string CYAN = "\033[1;36m";
-constexpr string MAGENTA = "\033[1;35m";
+const string RED = "\033[1;31m";
+const string YELLOW = "\033[1;33m";
+const string BLUE = "\033[1;34m";
+const string RESET = "\033[0m";
+const string GREEN = "\033[1;32m";
+const string MAGENTA = "\033[1;35m";
 
 //main elements
 constexpr int R=6 , C=7;
 constexpr int P1 = 1 , P2 = 2; 
-char board[R][C];
+//char board[R][C];
 bool endgame = false;
 
 //GUI 
 constexpr char EMPTY_GUI= '.' , P1_GUI = 'X', P2_GUI = 'O';
 
 //Data Strunctures
-struct gamestate {
+struct gamestatus {
     array<array<int , C>, R> board{};
     array<int , C> gravity{5,5,5,5,5,5,5};
     int cur_p = P1;
@@ -37,9 +36,11 @@ struct direction {
 };
 
 //functions
-void renderBoard(const gamestate &game);
+void renderBoard(const gamestatus &game);
 string menu();
 void twoplayer();
+int playMaker(const gamestatus &game,int move , int &headRow);
+bool winner(const array<array<int,C>,R> &baord, int prev_row , int prev_colom , int player);
 
 int main(){
     
@@ -55,12 +56,12 @@ int main(){
 }
 }
 
-void renderBoard(const gamestate &game){
+void renderBoard(const gamestatus &game){
     for ( int i=0 ; i < R ; ++i){
         cout << BLUE << "| " << RESET;
             for(int j=0; j<C ; ++j){
-                if (board[i][j]== P1) cout << CYAN << P1_GUI << " " << RESET ;
-                else if (board[i][j] == P2)cout << MAGENTA << P2_GUI << " " << RESET ;
+                if (game.board[i][j]== P1) cout << MAGENTA << P1_GUI << " " << RESET ;
+                else if (game.board[i][j] == P2)cout << YELLOW << P2_GUI << " " << RESET ;
                 else cout << EMPTY_GUI << " ";}
         cout << BLUE << "|" << RESET <<"\n" ;
     }
@@ -79,120 +80,93 @@ string menu(){
     return mode;
 }
 
+int playMaker(gamestatus &game, int move , int &headRow){
+    if (move <0 || move >= C) return 1;
+    if (game.gravity[move] < 0 ) return 2;
+    game.board[game.gravity[move]][move] = game.cur_p;
+    headRow = game.gravity[move];
+    game.gravity[move]--;
+    return 0;
+
+}
+bool winner(const array<array<int,C>,R> &board, int prev_row, int prev_colom, int player){
+     constexpr array<direction, 4> directions = {
+            direction{1,0},
+            direction{0,1},
+            direction{1,1},
+            direction{1,-1}
+        };
+
+            for(const auto &[row,col] : directions){
+                int wincnt = 1;
+
+                int newrow = prev_row + row ;
+                int newcol = prev_colom + col;
+                while (newrow >= 0 && newrow<R && newcol>=0 && newcol<C &&  board[newrow][newcol]==player){
+                    wincnt++;
+                    newrow += row;
+                    newcol += col;
+                }
+
+                newrow = prev_row - row;
+                newcol = prev_colom - col;
+                while(newrow>=0 && newrow<R && newcol>=0 && newcol<C && board[newrow][newcol]==player){
+                    wincnt++;
+                    newrow -= row;
+                    newcol -= col;
+                }
+                if(wincnt >= 4) return true;
+            }
+            return false;
+}
+
 void twoplayer(){
-    gamestate game;
+    gamestatus game;
     bool active = true;
+    int roundcnt = 0;
+    int round_max = R*C;
     while (active){
         renderBoard(game);
         cout <<BLUE <<"PRESS 1-7 + enter to choose colom.\n"<< RESET << "to " << RED << "exit "<< RESET << "press 0 + enter\n"; 
-        int whoPlay = game.cur_p;
-        if (whoPlay == 1){
-            cout << CYAN << "Player X " << RESET <<"move: ";
+        if (game.cur_p == 1){
+            cout << MAGENTA << "Player X " << RESET <<"move: ";
         }
-        else cout << MAGENTA << "Player O " << RESET <<"move: ";
+        else cout << YELLOW << "Player O " << RESET <<"move: ";
         
         int move;
         cin >> move;
+        if (cin.fail()){
+            cin.clear();
+            cin.ignore(1e9, '\n');
+            cout << RED << "Invalid key please Enter only valid keys \n" << RESET;
+            continue;
+        }
+        if(move == 0)break;
+
         move--;
 
-
-        active = false;
-    }
-}
-
-/*
-bool makeMove(GameState& game, int col, int& outRowPlaced) {
-    if (col < 0 || col >= COLS || game.nextAvailableRow[col] < 0) {
-        return false;
-    }
-    int row = game.nextAvailableRow[col];
-    game.board[row][col] = game.currentPlayer;
-    outRowPlaced = row;
-    game.nextAvailableRow[col]--;
-    return true;
-}
-
-bool checkWinner(const array<array<int, COLS>, ROWS>& board, int lastRow, int lastCol, int player) {
-    constexpr array<Direction, 4> directions = {{
-        {0, 1},   // Horizontal
-        {1, 0},   // Vertical
-        {1, 1},   // Diagonal Down-Right
-        {1, -1}   // Diagonal Down-Left
-    }};
-
-    for (const auto& [dRow, dCol] : directions) {
-        int count = 1;
-
-        // Look Forward
-        int r = lastRow + dRow;
-        int c = lastCol + dCol;
-        while (r >= 0 && r < ROWS && c >= 0 && c < COLS && board[r][c] == player) {
-            count++;
-            r += dRow;
-            c += dCol;
-        }
-
-        // Look Backward
-        r = lastRow - dRow;
-        c = lastCol - dCol;
-        while (r >= 0 && r < ROWS && c >= 0 && c < COLS && board[r][c] == player) {
-            count++;
-            r -= dRow;
-            c -= dCol;
-        }
-
-        if (count >= 4) {
-            return true;
-        }
-    }
-    return false;
-}
-void playTwoPlayerGame() {
-    GameState game;
-    bool gameActive = true;
-    int movesCount = 0;
-    int maxMoves = ROWS * COLS;
-
-    while (gameActive) {
-        renderBoard(game);
+        int headRow = 5;
         
-        int activePlayer = game.currentPlayer;
-        if (activePlayer == PLAYER_1) {
-            cout << RED << "Player 1 (X)" << RESET;
-        } else {
-            cout << YELLOW << "Player 2 (O)" << RESET;
-        }
-        cout << ", enter column (1-" << COLS << "): ";
+        int playRes= playMaker(game,move,headRow);
 
-        int chosenColumn;
-        cin >> chosenColumn;
-        chosenColumn--; // Convert 1-indexed choice to 0-indexed array space
+        if(playRes==1)cout << RED <<++move << " such a colom does not exit enter a valid colom 1-7\n" << RESET;
+        else if (playRes==2)cout << RED << ++move <<" colom is full try a different colom.\n" << RESET;
+        else roundcnt++;
 
-        int rowPlaced = -1;
-        if (makeMove(game, chosenColumn, rowPlaced)) {
-            movesCount++;
-            
-            // Check win condition using the freshly placed move details
-            if (checkWinner(game.board, rowPlaced, chosenColumn, activePlayer)) {
-                renderBoard(game);
-                if (activePlayer == PLAYER_1) {
-                    cout << GREEN << "CONGRATULATIONS! Player 1 (X) wins!\n\n" << RESET;
-                } else {
-                    cout << GREEN << "CONGRATULATIONS! Player 2 (O) wins!\n\n" << RESET;
-                }
-                gameActive = false;
-            } 
-            // Check for draw condition
-            else if (movesCount == maxMoves) {
-                renderBoard(game);
-                cout << YELLOW << "It's a tie game! The board is full.\n\n" << RESET;
-                gameActive = false;
-            } 
-            else {
-                // Alternates current player only after a valid non-winning turn
-                game.currentPlayer = (activePlayer == PLAYER_1) ? PLAYER_2 : PLAYER_1;
-            }
-        } else {
-            cout << RED << "Column is full or invalid! Try again.\n" << RESET;
-        }
-    }*/
+        bool win = winner(game.board, headRow, move , game.cur_p);
+
+        if(win){
+            renderBoard(game);
+            string winner = (game.cur_p==P1)? "Player X" : "Player O";
+            cout << GREEN << "CONGRATULATIONS! " << BLUE << winner << GREEN <<"Won this Round\n"<<RESET;
+
+            active = false;}
+        else if (roundcnt == round_max){
+            renderBoard(game);
+            cout << GREEN << "GOOD GAME! IT IS A DRAW\n"<<RESET ;
+
+            active = false;}
+        game.cur_p = (game.cur_p == P1) ? P2 : P1;
+        
+    }
+}
