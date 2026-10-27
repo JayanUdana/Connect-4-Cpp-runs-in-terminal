@@ -149,8 +149,10 @@ void twoplayer(){
         
         int playRes= playMaker(game,move,headRow);
 
-        if(playRes==1)cout << RED <<++move << " : such a colom does not exit enter a valid colom 1-7\n" << RESET;
-        else if (playRes==2)cout << RED <<" colom "<< ++move <<" is full try a different colom.\n" << RESET;
+        if(playRes==1){cout << RED <<++move << " : such a colom does not exit enter a valid colom 1-7\n" << RESET;
+            continue;}
+        else if (playRes==2){cout << RED <<" colom "<< ++move <<" is full try a different colom.\n" << RESET;
+            continue;}
         else roundcnt++;
 
         bool win = winner(game.board, headRow, move , game.cur_p);
