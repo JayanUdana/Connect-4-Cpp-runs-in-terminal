@@ -5,7 +5,8 @@ In this project I tried to improve time complexity as much as i can possible wit
 
 Let's now go throght the code to undersatnd what it is and how i improved certain points to improve performence.  I will explain this code in four parts.
 
-> [!4 Parts that power the code]
+> [!NOTE]
+> ### 4 Parts that power the code
 > 1. [Colors and GUI](#coloers-and-gui) (Aesthetic part when code in running).
 > 2. [Data structures](#data-structures-and-constants) and CONSTANT variables (that gave the code parformance and safety net).
 > 3. [Functions](#functions) (magic that powers the code)
