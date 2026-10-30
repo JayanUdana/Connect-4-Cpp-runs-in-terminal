@@ -12,7 +12,7 @@ Let's now go throght the code to undersatnd what it is and how i improved certai
 > 4. [int main()](#int-main){where everything works as an unit}
 
 ## Colors and GUI
-For colors I used //technique, to choose colors as you can see I used this code const string RED = "\033[1;31m"; for colors. "\033[ then 1;31m"; to tell which color I need. After using a color code we need to remove the color currently active otherwise everything after using the color will take color I do not need to happen that so used RESET do change color in to defalt back again.
+For colors I used ANSI escape codes to change the text color in a terminal window to bold colors, to choose colors as you can see I used this code **const string RED = "\033[1;31m";** for colors. **"\033** is know as escape character use to signal the terminal after this comes an command to execute **[** is Control Sequence Introducer (CSI) signal start of the command then **1** to bold the text **;** used to chain multiple formatings **31** is for the color red **m"** usesd to signal command is over; to tell which color I need. After using a color code we need to remove the color currently active otherwise everything after using the color will take color I do not need to happen that so used RESET do change color in to defalt back again.
 
 For user friendly visuals I used following varible to show pieces of the game combined with colors constexpr char EMPTY_GUI= '.' , P1_GUI = 'X', P2_GUI = 'O';. This help players to indentify pieces quickly and make game more visual pleasing. You can see how I used this pieces to work together with the board in this function [void renderBoard(const gamestatus &game);](#void-renderboardconst-gamestatus-game).
 
