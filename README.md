@@ -11,6 +11,9 @@
 </div>
 
 ---
+<div align="center"><img width="300" height="200" alt="Image" src="https://github.com/user-attachments/assets/3b016b00-17f8-4a53-921d-b70bb38a94a5" /></div>
+
+---
 
 ## 🎯 About the Project
 
