@@ -44,7 +44,8 @@ After chosing the two player mode in main menu. Also handle error cases which pl
 ### int playMaker(const gamestatus &game,int move , int &headRow);
 This function has the instruction to do what happens after each move played, where to put the pieces after each move. Gravity array comes in handy in this to reduce time complexity. 
 ### bool winner(const array<array<int,C>,R> &baord, int prev_row , int prev_colom , int player);
-In this function rather than seaching through all the board to find if a winner move exist we can see if the last move is the winner move.Using directions data type I created we can search if the last move is winner or not. For visual undersatnd is in down below.
+In this function rather than seaching through all the board to find if a winner move exist we can see if the last move is the winner move.Using directions data type I created we can search if the last move is winner or not. For visual undersatnd is in down below.\
+<img width="1312" height="1199" alt="Image" src="https://github.com/user-attachments/assets/f7d2611f-d2c0-433b-8a65-65d2af72fef3" />
 
 
 ## int main()
