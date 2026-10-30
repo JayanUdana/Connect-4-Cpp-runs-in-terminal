@@ -94,6 +94,7 @@ This how colored pieces work togher in [`renderBoard`](#-renderboard) to make ga
 &nbsp;&nbsp;&nbsp;
 <img width="313" height="309" alt="Connect 4 board" src="https://github.com/user-attachments/assets/9e491a77-eca9-487a-8bd9-6208aacb83fc" />
 </div>
+
 ---
 
 ## 🗄️ Data Structures and Constants
